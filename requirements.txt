@@ -1,0 +1,8 @@
+# AI-Exchange-Room 依赖
+
+# 核心依赖（目前使用Python标准库，无外部依赖）
+# 如果未来需要，可以添加：
+# anthropic>=0.18.0  # Claude API客户端（如果使用API）
+# requests>=2.31.0   # HTTP请求
+# rich>=13.0.0       # 美化终端输出
+# click>=8.1.0       # CLI框架
