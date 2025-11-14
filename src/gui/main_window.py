@@ -71,10 +71,12 @@ class MainWindow(QMainWindow):
 
         analyze_req = QAction("需求分析...", self)
         analyze_req.setShortcut("Ctrl+Shift+A")
+        analyze_req.triggered.connect(self._open_requirement_analysis)
         project_menu.addAction(analyze_req)
 
         task_board = QAction("任务看板", self)
         task_board.setShortcut("Ctrl+Shift+T")
+        task_board.triggered.connect(self._open_task_board)
         project_menu.addAction(task_board)
 
         # 帮助菜单
@@ -100,12 +102,15 @@ class MainWindow(QMainWindow):
         toolbar.addSeparator()
 
         analyze_btn = QAction("需求分析", self)
+        analyze_btn.triggered.connect(self._open_requirement_analysis)
         toolbar.addAction(analyze_btn)
 
         tasks_btn = QAction("任务管理", self)
+        tasks_btn.triggered.connect(self._open_task_board)
         toolbar.addAction(tasks_btn)
 
         monitor_btn = QAction("项目监控", self)
+        monitor_btn.triggered.connect(self._open_monitoring_dashboard)
         toolbar.addAction(monitor_btn)
 
     def _init_central_widget(self):
@@ -485,3 +490,45 @@ class MainWindow(QMainWindow):
     def update_status(self, message: str):
         """更新状态栏消息"""
         self.status_label.setText(message)
+
+    def _open_requirement_analysis(self):
+        """打开需求分析界面"""
+        from src.gui.widgets.requirement_analysis_widget import RequirementAnalysisWidget
+
+        # 创建需求分析widget
+        analysis_widget = RequirementAnalysisWidget()
+
+        # 添加到中央标签页
+        self.add_central_tab(analysis_widget, "📝 需求分析", closable=True)
+
+        # 更新状态栏
+        self.update_status("需求分析界面已打开")
+        self.log_output("打开需求分析界面")
+
+    def _open_task_board(self):
+        """打开任务看板界面"""
+        from src.gui.widgets.task_board_widget import TaskBoardWidget
+
+        # 创建任务看板widget
+        board_widget = TaskBoardWidget()
+
+        # 添加到中央标签页
+        self.add_central_tab(board_widget, "📋 任务看板", closable=True)
+
+        # 更新状态栏
+        self.update_status("任务看板已打开")
+        self.log_output("打开任务看板")
+
+    def _open_monitoring_dashboard(self):
+        """打开监控仪表板界面"""
+        from src.gui.widgets.monitoring_dashboard_widget import MonitoringDashboardWidget
+
+        # 创建监控仪表板widget
+        dashboard_widget = MonitoringDashboardWidget()
+
+        # 添加到中央标签页
+        self.add_central_tab(dashboard_widget, "📊 监控仪表板", closable=True)
+
+        # 更新状态栏
+        self.update_status("监控仪表板已打开")
+        self.log_output("打开监控仪表板")
