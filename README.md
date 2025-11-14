@@ -68,6 +68,25 @@ python src/cli_tools.py ./projects/PRJ-XXXXXXXX list
 python src/cli_tools.py ./projects/PRJ-XXXXXXXX task TASK-XXXXXXXX
 ```
 
+### 交互式执行任务（新功能✨）
+
+```bash
+# 启动交互式任务执行（支持自动确认）
+python src/execute_tasks.py ./projects/PRJ-XXXXXXXX
+
+# 自定义倒计时（3秒）
+python src/execute_tasks.py ./projects/PRJ-XXXXXXXX --timeout 3
+
+# 执行下一个任务
+python src/execute_tasks.py ./projects/PRJ-XXXXXXXX --next
+```
+
+**特性**：
+- ⏱️  倒计时自动确认（默认5秒）
+- ⚡ 可随时用户干预（输入 y/n）
+- 🚀 支持批量操作（全部是/全部否）
+- 📝 按回车跳过倒计时
+
 ### 运行测试
 
 ```bash
@@ -79,6 +98,7 @@ python test_basic.py
 
 - [使用指南](docs/USAGE_GUIDE.md) - 完整的使用文档
 - [快速示例](docs/QUICK_START_EXAMPLE.md) - 实际操作示例
+- [自动确认指南](docs/AUTO_CONFIRM_GUIDE.md) - 自动确认系统详解
 
 ## 项目结构
 
@@ -116,12 +136,14 @@ AI-Exchange-Room/
 - [x] 任务分解引擎
 - [x] 项目状态持久化
 - [x] 任务执行框架
+- [x] **自动确认系统（倒计时+用户干预）**
+- [x] 交互式任务执行器
 - [x] CLI工具集
 - [x] 完整测试套件
 - [x] 使用文档
 
 计划中的功能：
-- [ ] 任务执行自动化集成
+- [x] 任务执行自动化集成（已完成基础版）
 - [ ] 项目模板系统
 - [ ] 需求变更管理
 - [ ] 多项目管理
