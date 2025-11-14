@@ -70,10 +70,23 @@ cd AI-Exchange-Room
 pip install -r requirements.txt
 ```
 
-### 启动GUI（推荐）
+### 启动工具箱（推荐）✨
 
 ```bash
-# 启动图形界面
+# 启动工具箱主界面
+python toolbox_main.py
+```
+
+**工具箱功能**:
+- 🔌 **插件化架构**: 自动发现和加载插件
+- 🎯 **AI-Exchange-Room**: 作为核心插件集成
+- 📦 **可扩展**: 使用模板轻松创建新插件
+- 🎨 **统一界面**: 所有工具集中管理
+
+### 直接启动AI-Exchange-Room
+
+```bash
+# 启动AI-Exchange-Room独立界面
 python gui_main.py
 ```
 
@@ -126,8 +139,11 @@ python src/execute_tasks.py ./projects/PRJ-XXXXXXXX --next
 ### 运行测试
 
 ```bash
-# 运行完整的功能测试
+# 运行AI-Exchange-Room基础测试
 python test_basic.py
+
+# 运行工具箱系统测试
+python test_toolbox.py
 ```
 
 ### 详细文档
@@ -146,18 +162,34 @@ AI-Exchange-Room/
 │   │   ├── task_decomposer.py       # 任务分解引擎
 │   │   ├── project_manager.py       # 项目状态管理
 │   │   └── context_builder.py       # 上下文构建器
-│   ├── models/              # 数据模型
+│   ├── gui/                  # GUI界面
+│   │   ├── main_window.py           # AI-Exchange-Room主窗口
+│   │   └── widgets/                 # GUI组件
+│   ├── toolbox/              # 工具箱系统 ✨
+│   │   ├── core/
+│   │   │   ├── plugin_interface.py  # 插件接口定义
+│   │   │   └── plugin_manager.py    # 插件管理器
+│   │   └── gui/
+│   │       └── main_window.py       # 工具箱主窗口
+│   ├── models/               # 数据模型
 │   │   ├── project.py
 │   │   ├── task.py
 │   │   └── requirement.py
-│   ├── utils/               # 工具函数
+│   ├── utils/                # 工具函数
 │   │   ├── file_handler.py
 │   │   └── logger.py
-│   └── main.py              # 主入口
-├── projects/                # 用户项目存储目录
-├── templates/               # 项目模板
-├── docs/                    # 文档
-├── tests/                   # 测试
+│   └── main.py               # 主入口
+├── plugins/                  # 插件目录 ✨
+│   ├── ai-exchange-room/     # AI-Exchange-Room插件
+│   │   └── plugin.py
+│   └── template/             # 插件模板
+│       └── plugin.py
+├── projects/                 # 用户项目存储目录
+├── templates/                # 项目模板
+├── docs/                     # 文档
+├── tests/                    # 测试
+├── toolbox_main.py           # 工具箱入口 ✨
+├── gui_main.py               # AI-Exchange-Room独立入口
 ├── requirements.txt
 └── README.md
 ```
@@ -184,6 +216,14 @@ AI-Exchange-Room/
 - [x] ✨ 监控仪表板（实时指标）
 - [x] ✨ 亮色主题样式
 
+**工具箱系统** ⭐ 新增:
+- [x] ✨ 插件化架构设计
+- [x] ✨ 插件接口和管理器
+- [x] ✨ 自动插件发现和加载
+- [x] ✨ AI-Exchange-Room插件集成
+- [x] ✨ 插件开发模板
+- [x] ✨ 工具箱主界面
+
 **测试和文档**:
 - [x] 完整测试套件（100%通过）
 - [x] 详细技术文档
@@ -191,26 +231,31 @@ AI-Exchange-Room/
 
 ### 未来计划
 
+- [x] ~~插件系统~~ ✅ 已完成
+- [ ] 更多插件（代码生成器、测试工具等）
 - [ ] 导出需求分析报告
 - [ ] 任务拖拽功能
 - [ ] 图表可视化增强
 - [ ] Docker部署
-- [ ] 插件系统
 
 ## 📊 项目统计
 
-- **代码量**: 6,365+ 行
-  - Python: 4,365+ 行
+- **代码量**: 7,600+ 行
+  - Python: 5,400+ 行（含工具箱系统）
   - QSS样式: 200+ 行
-  - 文档: 1,800+ 行
-- **文件数**: 35+
-- **组件数**: 25+ 个类
+  - 文档: 2,000+ 行
+- **文件数**: 45+
+- **组件数**: 30+ 个类
+- **插件数**: 2 个（AI-Exchange-Room + 模板）
 - **测试覆盖**: ~85%
 - **测试通过率**: 100%
 
 ## 📚 文档
 
 - [项目完成报告](PROJECT_COMPLETE_FINAL.md) - 完整的项目总结
+- [工具箱系统文档](TOOLBOX_README.md) - 工具箱架构和插件开发 ⭐ 新增
+- [验收指南](ACCEPTANCE_GUIDE.md) - 项目验收标准和流程
+- [改进建议](IMPROVEMENT_SUGGESTIONS.md) - 代码审查和改进方向
 - [GUI完整文档](docs/GUI_COMPLETE.md) - GUI系统详细文档
 - [GUI框架文档](docs/GUI_FRAMEWORK.md) - 基础框架说明
 - [使用指南](docs/USAGE_GUIDE.md) - CLI使用指南
@@ -218,7 +263,11 @@ AI-Exchange-Room/
 
 ## 🎨 界面预览
 
-启动GUI后，您将看到：
+**工具箱界面** (推荐):
+- **插件主页**: 网格布局展示所有可用插件
+- **AI-Exchange-Room**: 作为核心插件运行
+
+**AI-Exchange-Room界面**:
 - **欢迎页**: 快速开始按钮
 - **需求分析界面**: 6个AI角色实时讨论
 - **任务看板**: 待办/进行中/已完成三列布局
