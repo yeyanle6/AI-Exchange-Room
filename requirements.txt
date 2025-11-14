@@ -1,8 +1,7 @@
 # AI-Exchange-Room 依赖
 
 # GUI框架
-PyQt6>=6.6.0
-PyQt6-WebEngine>=6.6.0  # Web视图支持
+PyQt5>=5.15.0
 
 # 可视化
 matplotlib>=3.8.0
