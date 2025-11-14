@@ -25,12 +25,18 @@ class AnalysisWorker(QThread):
     message_received = pyqtSignal(str, str, str)  # role, name, message
     analysis_complete = pyqtSignal(dict)  # result
     progress_update = pyqtSignal(int)  # progress percentage
+    error_occurred = pyqtSignal(str)  # error message
 
     def __init__(self, project_description: str, project_type: str = "desktop_app"):
         super().__init__()
         self.project_description = project_description
         self.project_type = project_type
         self.analyst = MultiAgentAnalyst()
+        self._stop_requested = False
+
+    def stop(self):
+        """请求停止分析"""
+        self._stop_requested = True
 
     def run(self):
         """执行需求分析"""
@@ -82,8 +88,12 @@ class AnalysisWorker(QThread):
             current = 0
 
             for role, messages in role_messages.items():
+                if self._stop_requested:
+                    break
                 persona = self.analyst.agents[role].persona
                 for msg in messages:
+                    if self._stop_requested:
+                        break
                     self.message_received.emit(
                         role.value,
                         persona.name,
@@ -106,7 +116,10 @@ class AnalysisWorker(QThread):
             self.analysis_complete.emit(result)
 
         except Exception as e:
-            print(f"分析错误: {e}")
+            import traceback
+            error_msg = f"分析过程出错: {str(e)}"
+            print(f"[ERROR] {error_msg}\n{traceback.format_exc()}")
+            self.error_occurred.emit(error_msg)
 
 
 class RequirementAnalysisWidget(QWidget):
@@ -270,9 +283,29 @@ class RequirementAnalysisWidget(QWidget):
     def _start_analysis(self):
         """开始需求分析"""
         requirement = self.requirement_input.toPlainText().strip()
+
+        # 输入验证
         if not requirement:
             self._log_system_message("⚠️ 请输入项目需求描述")
             return
+
+        if len(requirement) < 10:
+            self._log_system_message("⚠️ 需求描述过短，请至少输入10个字符")
+            return
+
+        if len(requirement) > 5000:
+            self._log_system_message("⚠️ 需求描述过长，请控制在5000字符以内")
+            return
+
+        # 如果已有线程在运行，先停止
+        if self.worker is not None and self.worker.isRunning():
+            self._log_system_message("⚠️ 上一个分析任务仍在运行，请稍候...")
+            return
+
+        # 清理旧线程
+        if self.worker is not None:
+            self.worker.deleteLater()
+            self.worker = None
 
         # 清空之前的内容
         self.discussion_area.clear()
@@ -293,6 +326,7 @@ class RequirementAnalysisWidget(QWidget):
         self.worker.message_received.connect(self._on_message_received)
         self.worker.analysis_complete.connect(self._on_analysis_complete)
         self.worker.progress_update.connect(self._on_progress_update)
+        self.worker.error_occurred.connect(self._on_analysis_error)
         self.worker.start()
 
         self._log_system_message("🚀 开始需求分析，AI角色正在讨论...")
@@ -348,6 +382,18 @@ class RequirementAnalysisWidget(QWidget):
     def _on_progress_update(self, progress: int):
         """更新进度"""
         self.progress_bar.setValue(progress)
+
+    def _on_analysis_error(self, error_msg: str):
+        """处理分析错误"""
+        # 隐藏进度条
+        self.progress_bar.setVisible(False)
+
+        # 恢复按钮
+        self.analyze_btn.setEnabled(True)
+        self.analyze_btn.setText("🚀 开始分析")
+
+        # 显示错误消息
+        self._log_system_message(f"❌ 错误: {error_msg}")
 
     def _display_results(self, result: dict):
         """显示分析结果"""
